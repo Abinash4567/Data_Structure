@@ -21,7 +21,7 @@ int main()
 	}
 
 	cout<<a<<endl;
-	cout<<__gcd(a, b);
+	cout<<__gcd(a, b);     //stk to get gcd 
 
 	return 0;
 }

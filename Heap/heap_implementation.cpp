@@ -1,85 +1,192 @@
 #include <iostream>
+#include <math.h>
 #include <climits>
-	using namespace std;
+    using std::cin;
+    using std::cout;
+    using std::swap;
 
-class heap
-{
-public:
-	int arr[100];
-	int size = -1;
+class max_heap{
+private:
+    int *arr;
+    int capacity;
+    int heap_size;
 
-	void insert(int val)
-	{
-		size++;
-		arr[size] = val;
-		int index = size;
+    max_heap(int s)
+    {
+        heap_size = -1;
+        capacity = s;
+        arr = new int[s];
+    }
 
-		while(index > 0)
-		{
-			int parent = (index-1)/2;
-			if(arr[parent] < arr[index]){
-				swap(arr[parent], arr[index]);
-				index = parent;
-			}
-			else{
-				return;
-			}
-		}
-	}
+    int height()
+    {
+        return (ceil(log2(heap_size+1))-1);
+    }
 
-	void delete_heap()
-	{
-		if(size ==-1)
-		{
-			cout<<"Heap is empty";
-			return;
-		}
+    int right_child(int a)
+    {
+        return arr[2*a+2];
+    }
 
-		arr[0]=arr[size];
-		size--;
+    int left_child(int a)
+    {
+        return arr[2*a+1];
+    }
 
-		int index = 0;
+    int parent(int a)
+    {
+        return floor((a-1)/2);
+    }
 
-		while(index < n/2)
-		{
-			int largest = index;
-			int left = 2*index+1;
-			int right = 2*index+2;
+    int sizee()
+    {
+        return  heap_size+1;
+    }
 
-			if (left <= size and arr[index] < arr[left])
-				largest = left;
+    void heapify_bottom_up(int index)
+    {
+        int pa = parent(index);
 
-			if (right <= size and arr[index] < arr[right])
-				largest = right;
-			else
-				return;
+        while(pa>0 and arr[pa]<arr[index])
+        {
+                swap(arr[pa], arr[index]);
+                pa = parent(pa);
+        }
+    }
 
-			if (largest!=index)
-				swap(arr[largest], arr[index]);
-			index = largest;
-		}
-	}
+    void insert(int a)
+    {
+        if(heap_size==capacity-1)
+        {
+            cout<<"Overflow: Heap full";
+            return;
+        }
 
-	void print_heap()
-	{
-		for(int i=0;i<size;i++)
-			cout<<arr[i]<<"   ";
-	}
+        arr[++heap_size] = a;
 
+        heapify_bottom_up(heap_size);
+    }
+
+    void heapify(int index)
+    {
+        int largest = index;
+        int left = left_child(largest);
+        int right = right_child(largest);
+ 
+        if(left < heap_size+1 and arr[left]>arr[largest])
+            largest = left;
+
+        if(right < heap_size+1 and arr[right]>arr[largest])
+            largest = right;
+
+        if(largest!=index)
+        {
+            swap(arr[index], arr[largest]);
+            heapify(largest);
+        }
+    }
+
+    void heapify(int index, int n)
+    {
+        int largest = index;
+        int left = left_child(largest);
+        int right = right_child(largest);
+ 
+        if(left < n and arr[left]>arr[largest])
+            largest = left;
+
+        if(right < n and arr[right]>arr[largest])
+            largest = right;
+
+        if(largest!=index)
+        {
+            swap(arr[index], arr[largest]);
+            heapify(largest);
+        }
+    }
+
+
+    void delete_heap()
+    {
+        swap(arr[0], arr[heap_size]);
+
+        heap_size--;
+
+        heapify(0);
+    }
+
+    void delete_node(int index)
+    {
+        increase_key(index, INT_MAX);
+        extract_max();
+    }
+
+    int extract_max()
+    {
+       if(heap_size==-1)
+        return -1;
+
+        if(heap_size==0)
+        {
+            heap_size--;
+            return arr[heap_size+1];
+        } 
+
+        int b = arr[0];
+        delete_heap();
+        return b;
+    }
+
+    void increase_key(int index, int val)
+    {
+        if(val<arr[parent(index)])
+            {
+                cout<<"Not valid operation";
+                return;
+            }
+
+        arr[index] = val;
+        heapify_bottom_up(index);
+    }
+
+    void decrease_key(int index, int val)
+    {
+        if(val>arr[left_child(index)] and val>arr[right_child(index)])
+        {
+            cout<<"Not valid operation";
+            return;
+        }
+
+        arr[index] = val;
+        heapify(index);
+    }
+
+    void print()
+    {
+        for(int i=0; i<heap_size; i++)
+            cout<<arr[i]<<"  ";
+    }
+
+    void heap_sort()
+    {
+        int ss = heap_size+1;
+        for(int i=ss/2-1; i>0; i--)
+            heapify(i);
+        
+
+        for(int i=heap_size; i>=0; i--)
+        {
+            swap(arr[i], arr[0]);
+            heapify(0, i);
+        }
+    }
 };
+
+
 
 int main()
 {
-	heap h1;
-	h1.insert(11);
-	h1.insert(12);
-	h1.insert(18);
-	h1.insert(12);
-	h1.insert(10);
-	h1.insert(15);
 
-	h1.print_heap();
 
-	
-	return 0;
+    return 0;
 }

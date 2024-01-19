@@ -6,21 +6,11 @@ int remove_dup(vector<int> &arr)
     int i=0;
 
     for(int j=1;j<arr.size();j++)
-    {
-        if(arr[i]==arr[j])
-        {
-            continue;
-        }
-        else
-        {
+        if(arr[i]!=arr[j])
             arr[++i]=arr[j];
 
-        }
-
-    }
     return ++i;
 }
-
 
 
 int main()
